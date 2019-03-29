@@ -165,7 +165,11 @@ typedef NS_ENUM(NSUInteger, LAMCompressionOperation) {
 	
 	do {
 		status = compression_stream_process(&stream, flags);
-		
+        
+        if(stream.src_size == 0 && status == COMPRESSION_STATUS_OK){
+            status = COMPRESSION_STATUS_END;
+        }
+        
 		switch (status) {
 			case COMPRESSION_STATUS_OK:
 				// Going to call _process at least once more, so prepare for that
