@@ -190,6 +190,17 @@
 	XCTAssertEqualObjects(testString, uncompressedString);
 }
 
+/// Don't infinite loop when given bad data
+- (void)test_infiniteLoopDecompression {
+    
+    NSString *testString = @"[]";
+    NSData *testStringData = [testString dataUsingEncoding:NSUTF8StringEncoding];
+    
+    [testStringData lam_uncompressedDataUsingCompression:LAMCompressionLZFSE];
+    
+    XCTAssertTrue(YES, @"Test didn't hang in infinite loop");
+}
+
 
 //--------------------------------------------------------
 // Support Methods

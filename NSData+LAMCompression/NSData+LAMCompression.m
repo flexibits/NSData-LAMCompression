@@ -164,12 +164,17 @@ typedef NS_ENUM(NSUInteger, LAMCompressionOperation) {
 	NSMutableData *outputData = [NSMutableData new];
 	
 	do {
+        uint8_t *original_ptr = (uint8_t *)stream.src_ptr;
 		status = compression_stream_process(&stream, flags);
-        
-        if(stream.src_size == 0 && status == COMPRESSION_STATUS_OK){
+
+        if(stream.src_size == 0 && original_ptr == stream.src_ptr){
+            // There's no data left to decompress, and our
+            // pointer hasn't moved recently, so we need to
+            // just bail out of the compression, this is likely
+            // badly formatted data.
             status = COMPRESSION_STATUS_END;
         }
-        
+
 		switch (status) {
 			case COMPRESSION_STATUS_OK:
 				// Going to call _process at least once more, so prepare for that
